@@ -25,7 +25,7 @@ async function main() {
 }
 
 app.get("/", (req, res) => {
-    res.send("Hi i am root ");
+    res.redirect("/main");
 });
 
 app.set("view engine", "ejs");
