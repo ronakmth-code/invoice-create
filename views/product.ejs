@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Products</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-4">
+    <h4>Add Products</h4>
+    <form action="/products" method="POST" id="productForm">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>HSN</th>
+                    <th>Product Name</th>
+                    <th>Pack</th>
+                    <th>Batch</th>
+                    <th>Exp</th>
+                    <th>M.R.P</th>
+                    <th>Rate</th>
+                    <th>IGST%</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="productTableBody">
+                <tr>
+                    <td><input type="text" name="products[0][hsn]" class="form-control" required></td>
+                    <td><input type="text" name="products[0][pname]" class="form-control" required></td>
+                    <td><input type="text" name="products[0][pack]" class="form-control"></td>
+                    <td><input type="text" name="products[0][batch]" class="form-control"></td>
+                    <td><input type="text" name="products[0][exp]" class="form-control"></td>
+                    <td><input type="number" step="0.01" name="products[0][mrp]" class="form-control"></td>
+                    <td><input type="number" step="0.01" name="products[0][rate]" class="form-control"></td>
+                    <td>
+                    <select name="products[0][igst]" class="form-control">
+                        <option value="">Select GST</option>
+                        <option value="0%">0%</option>
+                        <option value="5%">5%</option>
+                        <option value="12%">12%</option>
+                        <option value="18%">18%</option>
+                        <option value="28%">28%</option>
+                    </select>
+                    </td>
+
+                    <td><button type="button" class="btn btn-danger btn-sm remove-row">X</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-primary" id="addRowBtn">+ Add Product</button>
+        <button type="submit" class="btn btn-success">Save Products</button>
+    </form>
+</div>
+<br><br>
+<h2 class="text-center">Product Lists</h2>
+<table class="table table-bordered mx-10">
+    <thead>
+        <tr>
+            <th>HSN</th>
+            <th>Product Name</th>
+            <th>Pack</th>
+            <th>Batch</th>
+            <th>Exp</th>
+            <th>M.R.P</th>
+            <th>Rate</th>
+            <th>IGST%</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% if (products.length > 0) { %>
+            <% products.forEach(product => { %>
+                <tr>
+                    <td><%= product.hsn %></td>
+                    <td><%= product.pname %></td>
+                    <td><%= product.pack %></td>
+                    <td><%= product.batch %></td>
+                    <td><%= product.exp %></td>
+                    <td><%= product.mrp %></td>
+                    <td><%= product.rate %></td>
+                    <td><%= product.igst %></td>
+                    <td>
+                        <!-- Edit button -->
+                        <a href="/products/edit/<%= product._id %>" class="btn btn-warning btn-sm">Edit</a>
+
+                        <!-- Delete form -->
+                        <form action="/products/delete/<%= product._id %>" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this product?')">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+        <% } else { %>
+            <tr>
+                <td colspan="9" class="text-center">No products found</td>
+            </tr>
+        <% } %>
+    </tbody>
+</table>
+
+
+
+<script>
+    // Script TO HANDLE ROW ADD AND REMOVE IN PRODUCT FORM 
+
+let productIndex = 1;
+
+    document.getElementById("addRowBtn").addEventListener("click", function () {
+        const tableBody = document.getElementById("productTableBody");
+
+        const newRow = `
+            <tr>
+                <td><input type="text" name="products[${productIndex}][hsn]" class="form-control" required></td>
+                <td><input type="text" name="products[${productIndex}][pname]" class="form-control" required></td>
+                <td><input type="text" name="products[${productIndex}][pack]" class="form-control"></td>
+                <td><input type="text" name="products[${productIndex}][batch]" class="form-control"></td>
+                <td><input type="text" name="products[${productIndex}][exp]" class="form-control"></td>
+                <td><input type="number" step="0.01" name="products[${productIndex}][mrp]" class="form-control"></td>
+                <td><input type="number" step="0.01" name="products[${productIndex}][rate]" class="form-control"></td>
+                <td>
+                    <select name="products[${productIndex}][igst]" class="form-control">
+                        <option value="">Select GST</option>
+                        <option value="0%">0%</option>
+                        <option value="5%">5%</option>
+                        <option value="12%">12%</option>
+                        <option value="18%">18%</option>
+                        <option value="28%">28%</option>
+                    </select>
+                </td>
+                <td><button type="button" class="btn btn-danger btn-sm remove-row">X</button></td>
+            </tr>
+        `;
+
+        tableBody.insertAdjacentHTML("beforeend", newRow);
+        productIndex++;
+    });
+
+    document.getElementById("productTableBody").addEventListener("click", function (e) {
+        if (e.target.classList.contains("remove-row")) {
+            e.target.closest("tr").remove();
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product Auto-Fill</title>
+    <style>
+
+        *{
+            background-color: black;
+        }
+       
+        .product-form {
+    border-collapse: collapse;
+    width: 100%;
+    background-color: #1e1e1e;
+}
+
+.product-form th {
+    background-color: #00b3b3;
+    color: white;
+    padding: 8px;
+    text-align: left;
+    font-weight: bold;
+}
+
+.product-form td {
+    padding: 4px;
+    border-top: 1px solid #333;
+}
+
+.product-form input {
+    width: 100%;
+    padding: 6px;
+    border: none;
+    border-radius: 4px;
+    background-color: #2b2b2b;
+    color: white;
+}
+
+.product-form input:focus {
+    outline: none;
+    border: 1px solid #00b3b3;
+}
+
+/* Suggestion dropdown styling */
+.suggestions {
+    border: 1px solid #00b3b3;
+    background-color: #1e1e1e;
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    z-index: 999;
+    width: 100%;
+}
+
+.suggestion-item {
+    padding: 6px;
+    cursor: pointer;
+    color: white;
+    border-bottom: 1px solid #2b2b2b;
+}
+
+.suggestion-item:hover {
+    background-color: #00b3b3;
+    color: black;
+}
+
+/* To position suggestions under field */
+.field-container {
+    position: relative;
+}
+
+.add-btn {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background-color: #00b3b3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.add-btn:hover {
+    background-color: #009999;
+}
+
+#productTable input {
+    padding: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+#productTable .hsn {
+    width: 80px;
+}
+
+#productTable .pname {
+    width: 200px;
+}
+
+#productTable .pack {
+    width: 80px;
+}
+
+#productTable .qty {
+    width: 60px;
+}
+
+#productTable .batch {
+    width: 80px;
+}
+
+#productTable .exp {
+    width: 80px;
+}
+
+#productTable .mrp {
+    width: 70px;
+}
+
+#productTable .rate {
+    width: 70px;
+}
+
+#productTable .igst {
+    width: 60px;
+}
+
+#productTable .value {
+    width: 80px;
+}
+
+#productTable .amount {
+    width: 90px;
+}
+
+.field-container {
+    position: relative;
+}
+
+.suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border: 1px solid #ccc;
+    z-index: 10;
+    max-height: 150px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.suggestion-item {
+    padding: 4px;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background-color: #f0f0f0;
+}
+
+
+
+    </style>
+</head>
+<body>
+<h2>Search Product</h2>
+
+<table class="product-form" id="productTable">
+    <thead>
+        <tr>
+            <th>HSN</th>
+            <th>Product Name</th>
+            <th>Pack</th>
+            <th>Qty</th>
+            <th>Batch</th>
+            <th>Exp</th>
+            <th>M.R.P</th>
+            <th>Rate</th>
+            <th>IGST%</th>
+            <th>Value</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="field-container">
+                <input type="text" class="hsn" autocomplete="off">
+                <div class="suggestions"></div>
+            </td>
+            <td class="field-container">
+                <input type="text" class="pname" autocomplete="off">
+                <div class="suggestions"></div>
+            </td>
+            <td><input type="text" class="pack"></td>
+            <td><input type="number" class="qty"></td>
+            <td><input type="text" class="batch"></td>
+            <td><input type="text" class="exp"></td>
+            <td><input type="number" class="mrp"></td>
+            <td><input type="number" class="rate"></td>
+            <td><input type="text" class="igst"></td>
+            <td><input type="number" class="value"></td>
+            <td><input type="number" class="amount"></td>
+        </tr>
+    </tbody>
+</table>
+
+<button id="addProductBtn" class="add-btn">+ Add Product</button>
+
+<script>
+    const products = <%- JSON.stringify(allproducts) %>;
+
+    function fillForm(row, product) {
+        row.querySelector(".hsn").value = product.hsn;
+        row.querySelector(".pname").value = product.pname;
+        row.querySelector(".pack").value = product.pack;
+        row.querySelector(".qty").value = product.qty;
+        row.querySelector(".batch").value = product.batch;
+        row.querySelector(".exp").value = product.expiry;
+        row.querySelector(".mrp").value = product.mrp;
+        row.querySelector(".rate").value = product.rate;
+        row.querySelector(".igst").value = product.igst;
+        row.querySelector(".value").value = product.value;
+        row.querySelector(".amount").value = product.amount;
+    }
+
+    function attachSuggestions(row) {
+        const hsnInput = row.querySelector(".hsn");
+        const pnameInput = row.querySelector(".pname");
+        const hsnBox = hsnInput.nextElementSibling;
+        const pnameBox = pnameInput.nextElementSibling;
+
+        function setup(input, box, key) {
+            input.addEventListener("input", () => {
+                const val = input.value.trim().toLowerCase();
+                box.innerHTML = "";
+                if (!val) return;
+
+                const matches = products.filter(p => p[key].toLowerCase().includes(val));
+
+                matches.forEach(product => {
+                    const div = document.createElement("div");
+                    div.classList.add("suggestion-item");
+                    div.textContent = product[key];
+                    div.addEventListener("click", () => {
+                        fillForm(row, product);
+                        box.innerHTML = "";
+                    });
+                    box.appendChild(div);
+                });
+            });
+
+            document.addEventListener("click", (e) => {
+                if (!box.contains(e.target) && e.target !== input) {
+                    box.innerHTML = "";
+                }
+            });
+        }
+
+        setup(hsnInput, hsnBox, "hsn");
+        setup(pnameInput, pnameBox, "pname");
+    }
+
+    // Attach autocomplete to first row
+    document.querySelectorAll("#productTable tbody tr").forEach(row => attachSuggestions(row));
+
+    document.getElementById("addProductBtn").addEventListener("click", () => {
+        const tbody = document.querySelector("#productTable tbody");
+        const newRow = document.createElement("tr");
+        newRow.innerHTML = `
+            <td class="field-container">
+                <input type="text" class="hsn" autocomplete="off">
+                <div class="suggestions"></div>
+            </td>
+            <td class="field-container">
+                <input type="text" class="pname" autocomplete="off">
+                <div class="suggestions"></div>
+            </td>
+            <td><input type="text" class="pack"></td>
+            <td><input type="number" class="qty"></td>
+            <td><input type="text" class="batch"></td>
+            <td><input type="text" class="exp"></td>
+            <td><input type="number" class="mrp"></td>
+            <td><input type="number" class="rate"></td>
+            <td><input type="text" class="igst"></td>
+            <td><input type="number" class="value"></td>
+            <td><input type="number" class="amount"></td>
+        `;
+        tbody.appendChild(newRow);
+        attachSuggestions(newRow);
+    });
+</script>
+
+</body>
+</html>

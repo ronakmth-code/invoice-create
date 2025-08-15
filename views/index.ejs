@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Generator - CHALLAN</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="header">
+    <div class="logo-main">
+        <h1>Invoice Generator</h1>
+    </div>
+    <div class="nav-buttons d-flex justify-content-center align-items-center">
+        <div>
+            <h3 class="text-center mb-4">Welcome to Dashboard</h3>
+            <div class="text-center">
+                <a href="/product" class="btn btn-primary btn-lg mx-2">Product</a>
+                <a href="/users" class="btn btn-success btn-lg mx-2">Party</a>
+            </div>
+        </div>
+    </div>
+
+</header>
+
+    <div class="invoice-container" id="invoiceArea">
+        <div class="container">
+            <div class="invoice-container" id="invoiceContent">
+
+                <div class="invoice-top-section">
+
+                    <div class="invoice-header">
+                        <div class="company-details">
+                            <div class="company-info">
+                                <div class="logo-placeholder">
+                                    <div class="logo-box">
+                                        <img src="images/mahavar-logo.png" alt="" width="120px" height="80px">
+                                    </div>
+                                </div>
+                                <div class="company-text">
+                                    <h1 id="companyName">MAHAWAT HEALTHCARE</h1>
+                                    <p id="companyAddress">SCF NO. 512, 1ST FLOOR, MOTOR MARKET, MANIMAJRA, CHANDIGARH - 160101</p>
+                                    <p>Phone: <span id="companyPhone">9463837922, 9896570521</span></p>
+                                    <p>Email: <span id="companyEmail">mahawathealthcare@gmail.com</span></p>
+                                    <p>GSTIN: <span id="companyGSTIN">03CBNPK8237K1Z8</span></p>
+                                    <p>PAN No: <span id="companyPAN">BOPJ-2020/BW,B078-2020/OBW</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="customer-section">
+                        <div class="party-details">
+                            <h3>Bill To / Ship To</h3>
+                            <div class="party-col">
+                                <div class="contact-row">
+                                    <span>PARTY NAME:</span>
+                                    <div id="challan-party">
+                                        <span id="partyName-view" class="view-mode"></span>
+                                        <input type="text" id="partyName" class="edit-mode hm" placeholder="Party Name">
+                                        <div id="partySuggestions" class="suggestions-box"></div>
+                                    </div>
+                                </div>
+                                <div class="contact-row">
+                                    <span>PARTY ADDRESS:</span>
+                                    <div>
+                                        <span id="partyAddress-view" class="view-mode"></span>
+                                         <textarea id="partyAddress" class="edit-mode" placeholder="Party Address"></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- <span id="partyName-view" class="view-mode"> Party</span>
+                                <input type="text" id="partyName" class="edit-mode" placeholder="Party Name">
+                                <div id="partySuggestions" class="suggestions-box"></div>
+
+
+                                <span id="partyAddress-view" class="view-mode"></span>
+                                <textarea id="partyAddress" class="edit-mode" placeholder="Party Address"></textarea> -->
+                            </div>
+                            <div class="party-col">
+                                <div class="contact-row">
+                                    <span>GSTIN:</span>
+                                    <div>
+                                        <span id="partyGSTIN-view" class="view-mode"></span>
+                                        <input type="text" id="partyGSTIN" class="edit-mode" placeholder="Party GSTIN">
+                                    </div>
+                                </div>
+                                <div class="contact-row">
+                                    <span>Mobile:</span>
+                                    <div>
+                                        <span id="partyMobile-view" class="view-mode"></span>
+                                        <input type="text" id="partyMobile" class="edit-mode" placeholder="Party Mobile">
+                                    </div>
+                                </div>
+                                <div class="contact-row">
+                                    <span>PAN No:</span>
+                                     <div>
+                                        <span id="partyPAN-view" class="view-mode"></span>
+                                        <input type="text" id="partyPAN" class="edit-mode" placeholder="Party PAN">
+                                    </div>
+                                </div>
+                                <div class="contact-row">
+                                    <span>Email:</span>
+                                    <div>
+                                        <span id="partyEmail-view" class="view-mode"></span>
+                                        <input type="email" id="partyEmail" class="edit-mode" placeholder="Party Email">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="product-section">
+                    <div class="section-header">
+                        <h3>Products/Services</h3>
+                    </div>
+                    <div class="table-container">
+                        <table class="product-table" id="productTable">
+                            <thead>
+                                <tr>
+                                    <th>S.N</th>
+                                    <th>HSN</th>
+                                    <th>Product Name</th>
+                                    <th>Pack</th>
+                                    <th>Qty</th>
+                                    <th>Batch</th>
+                                    <th>Exp</th>
+                                    <th>M.R.P</th>
+                                    <th>Rate</th>
+                                    <th>IGST%</th>
+                                    <th>Value</th>
+                                    <th>Amount</th>
+                                    <th class="no-print">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productTableBody">
+                                <tr>
+                                    <td class="sn"></td>
+                                    <td><input type="text" class="hsn"></td>
+                                    <td style="position: relative;">
+                                        <input type="text" class="productName" autocomplete="off" style="width:100%">
+                                        <div class="suggestions-list" style="display:none;"></div>
+                                    </td>
+                                    <td><input type="text" class="pack"></td>
+                                    <td><input type="number" class="qty"></td>
+                                    <td><input type="text" class="batch"></td>
+                                    <td><input type="text" class="exp"></td>
+                                    <td><input type="number" class="mrp"></td>
+                                    <td><input type="number" class="rate"></td>
+                                    <td>
+                                        <input type="text" class="igst">
+                                    </td>
+                                    <td><input type="number" class="value"></td>
+                                    <td><input type="number" class="amount"></td>
+                                    <td class="no-print"><button class="removeRow">❌</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div id="globalSuggestions" class="suggestions-list"></div>
+                        <button id="addRowBtn" class="no-print">➕ Add New Product</button>
+                    </div>
+                </div>
+                <div class="tax-summary-row">
+                    <div class="tax-section tax-grid">
+                        <div class="tax-breakdown grid-item">
+                            <h3>Tax Breakdown</h3>
+                            <table class="tax-table">
+                                <thead>
+                                    <tr>
+                                        <th>IGST Rate</th>
+                                        <th>Taxable Amount</th>
+                                        <th>Tax Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>5.00%</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>12.00%</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>18.00%</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>28.00%</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                    </tr>
+                                    <tr class="total-row">
+                                        <td><strong>Total IGST</strong></td>
+                                        <td><strong>0.00</strong></td>
+                                        <td><strong>0.00</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="summary-section summary-grid">
+                        <div class="summary-details grid-item">
+                            <div class="summary-item">
+                                <span>Subtotal:</span>
+                                <input type="number" id="subtotal" value="0.00" readonly>
+                            </div>
+                            <div class="summary-item">
+                                <span>Total Tax:</span>
+                                <input type="number" id="totalTax" value="0.00" readonly>
+                            </div>
+                            <div class="summary-item">
+                                <span>Round Off:</span>
+                                <input type="number" id="roundOff" value="0.00" readonly>
+                            </div>
+                            <div class="summary-item grand-total">
+                                <span>Grand Total:</span>
+                                <input type="number" id="grandTotal" value="0.00" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bottom-details">
+                        <div class="bank-section">
+                            <h3>Bank Details</h3>
+                            <div class="bank-details">
+                                <div class="bank-column">
+                                    <p><strong>Bank Name:</strong> ICICI BANK</p>
+                                    <p><strong>A/C No:</strong> 036205501363</p>
+                                    <p><strong>IFSC Code:</strong> ICIC0000362</p>
+                                    <p><strong>Branch:</strong> manimajra chandigarh</p>
+                                </div>
+                                <div class="bank-column">
+                                    <p><strong>Bank Name:</strong> HDFC BANK</p>
+                                    <p><strong>A/C No:</strong> 50200060921301</p>
+                                    <p><strong>IFSC Code:</strong> HDFC0000435</p>
+                                    <p><strong>Branch:</strong> manimajra chandigarh</p>
+                                </div>
+                                <div class="bank-column">
+                                    <img src="images/qrcode.png" alt="" width="120px" height="120px">
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="signature-section">
+                                <p> <strong>FOR MAHAWAT HEALTHCARE</strong></p>
+                                <div class="signature-line"></div> <br> <br> <br> <br> <br> <br><br>
+                                <p><strong>Authorised Signatory</strong></p>
+                        </div>
+                </div>
+                    
+                
+            </div>
+            <div class="action-buttons no-print">
+                <button class="btn btn--primary" onclick="printInvoice()">Print</button>
+                <button class="btn btn--secondary" onclick="saveInvoice()">Save</button>
+            </div>
+        </div>
+    </div>
+    <script src="script/script.js"></script>
+</body>
+</html>
