@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const Product = require("./models/product");
-const User = require("./models/User");
+const User = require("./models/user");
 const path = require("path");
 require('dotenv').config();
 app.use(express.urlencoded({ extended: true })); // for form data
