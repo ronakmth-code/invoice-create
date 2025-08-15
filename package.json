@@ -1,7 +1,7 @@
 {
-  "engine":{
-    "node" : "22.14.0",
-  },
+  "engines": {
+  "node": "22.14.0"
+}
 
   "dependencies": {
     "all": "^0.0.0",
